@@ -42,17 +42,26 @@ export const getPasswords = async (req, res) => {
 
 //update
 export const updatePassword = async (req, res) => {
-    const { website, username, password } = req.body;
 
     try {
-        const updated = await Password.findOneAndUpdate(
-            { _id: req.params.id, userId: req.user },
-            {
-                website,
-                username,
-                password: encrypt(password)
-            },
-            { new: true })
+        const { website, username, password } = req.body;
+
+        const updateData = {};
+
+        if (website) updateData.website = website;
+        if (username) updateData.username = username;
+
+        if (password && password.trim() !== "") {
+            updateData.password = encrypt(password);
+        }
+
+        const updated = await Password.findByIdAndUpdate(
+            req.params.id,
+            updateData,
+            { new: true }
+        );
+
+        res.json(updated);
     } catch (error) {
         res.status(500).json({ message: error.message });
     }
@@ -61,14 +70,14 @@ export const updatePassword = async (req, res) => {
 
 //delete
 export const deletePassword = async (req, res) => {
-  try {
-    await Password.findOneAndDelete({
-      _id: req.params.id,
-      userId: req.user
-    });
+    try {
+        await Password.findOneAndDelete({
+            _id: req.params.id,
+            userId: req.user
+        });
 
-    res.json({ message: "Password deleted" });
-  } catch (error) {
-    res.status(500).json({ message: error.message });
-  }
+        res.json({ message: "Password deleted" });
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
 };
