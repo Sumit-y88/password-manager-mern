@@ -36,7 +36,7 @@ const Home = () => {
           <div className="flex items-center gap-4">
             <Link
               to="/login"
-              className="px-4 py-2 text-gray-300 hover:text-white transition-colors"
+              className="px-4 py-2 hidden md:block text-gray-300 hover:text-white transition-colors"
             >
               Login
             </Link>
